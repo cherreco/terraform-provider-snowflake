@@ -228,6 +228,10 @@ func ReadWarehouse(d *schema.ResourceData, meta interface{}) error {
 
 	w, err := client.Warehouses.ShowByID(ctx, id)
 	if err != nil {
+		if err == sdk.ErrObjectNotExistOrAuthorized {
+			d.SetId("")
+			return nil
+		}
 		return err
 	}
 
