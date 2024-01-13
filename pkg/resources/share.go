@@ -163,6 +163,10 @@ func ReadShare(d *schema.ResourceData, meta interface{}) error {
 
 	share, err := client.Shares.ShowByID(ctx, id)
 	if err != nil {
+		if err == sdk.ErrObjectNotExistOrAuthorized {
+			d.SetId("")
+			return nil
+		}
 		return fmt.Errorf("error reading share err = %w", err)
 	}
 	if err := d.Set("name", share.Name.Name()); err != nil {
